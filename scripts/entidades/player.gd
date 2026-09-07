@@ -82,7 +82,6 @@ func _physics_process(delta):
 	camera.position.y = lerp(camera.position.y, target_camera_y, 12.0 * delta)
 	camera.fov = lerp(camera.fov, target_fov, 8.0 * delta)
 
-	# Velocidade do giro ajustada para dar tempo de completar o 360 com calma
 	if is_flipping:
 		camera.rotation.x -= 6.0 * delta 
 	else:
@@ -97,16 +96,12 @@ func _physics_process(delta):
 		camera.v_offset = 0.0
 
 	# ============================================================
-	# GESTÃO DE TIMERS E ENERGIA
+	# GESTÃO DE TIMERS
 	# ============================================================
 	if compact_timer > 0:
 		compact_timer -= delta
 		if compact_timer <= 0 and is_on_floor():
 			estado = "idle"
-			
-	if estado != "run" and energia_atual < energia_maxima:
-		energia_atual += 2.0 * delta
-	energia_atual = clamp(energia_atual, 0.0, energia_maxima)
 
 	# ============================================================
 	# DIREÇÃO
@@ -148,7 +143,9 @@ func _physics_process(delta):
 			var is_crouching = Input.is_action_pressed("crouch")
 			var just_crouched = Input.is_action_just_pressed("crouch")
 
-			if Input.is_action_just_pressed("compact"):
+			# SÓ PERMITE O COMPACT NO CHÃO SE APERTAR O BOTÃO E TIVER PELO MENOS 25 DE ENERGIA
+			if Input.is_action_just_pressed("compact") and energia_atual >= 25.0:
+				energia_atual -= 25.0 # Gasta 25 de energia na hora
 				estado = "compacto_chao"
 				compact_timer = 1.5 
 				shake_intensity = 0.1 
@@ -172,7 +169,7 @@ func _physics_process(delta):
 				elif is_running:
 					estado = "run"
 					target_speed = run_speed
-					energia_atual -= 5.0 * delta 
+					energia_atual -= 15.0 * delta # Gasta corrida por segundo
 					
 				elif is_moving:
 					estado = "walk"
@@ -180,6 +177,12 @@ func _physics_process(delta):
 					
 				else:
 					estado = "idle"
+
+				# SE NÃO ESTIVER CORRENDO, RECUPERA ENERGIA GRADUALMENTE
+				if estado != "run":
+					energia_atual += 8.0 * delta
+
+				energia_atual = clamp(energia_atual, 0.0, energia_maxima)
 
 				if estado == "crouch_slide":
 					current_speed = lerp(current_speed, target_speed, 2.0 * delta) 
@@ -194,19 +197,23 @@ func _physics_process(delta):
 					target_velocity.y = jump_force
 
 	else:
-		# Gravidade suavizada no ar durante o compacto para estender o tempo de voo
+		# Se estiver no ar, recupera um pouco de energia
+		energia_atual += 4.0 * delta
+		energia_atual = clamp(energia_atual, 0.0, energia_maxima)
+
 		if estado == "compacto_ar":
 			target_velocity.y -= (fall_acceleration * 0.6) * delta
 		else:
 			target_velocity.y -= fall_acceleration * delta
 		
-		if Input.is_action_just_pressed("compact") and estado != "compacto_ar":
+		# SÓ PERMITE O COMPACT NO AR SE TIVER PELO MENOS 25 DE ENERGIA
+		if Input.is_action_just_pressed("compact") and estado != "compacto_ar" and energia_atual >= 25.0:
+			energia_atual -= 25.0 # Gasta 25 de energia no ar
 			estado = "compacto_ar"
 			
 			if current_speed > walk_speed + 0.5:
 				target_velocity.x = forward.x * compact_dash_force
 				target_velocity.z = forward.z * compact_dash_force
-				# Dá um pequeno impulso para cima (+6.0) ao dar o dash, esticando o tempo no ar
 				target_velocity.y = 6.0 
 				is_flipping = true
 			else:
