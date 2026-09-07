@@ -39,4 +39,4 @@ layout_mode = 2
 text = "EXIT"
 
 [node name="player_sheet" parent="." unique_id=893171310 instance=ExtResource("1_cbx2p")]
-transform = Transform3D(-0.026115114, 0, -0.99965894, 0, 1, 0, 0.99965894, 0, -0.026115114, 3.4766502, 0, -3.2837214)
+transform = Transform3D(-0.026115114, 0, -0.99965894, 0, 1, 0, 0.99965894, 0, -0.026115114, 3.4766502, 0, -1.8071685)
