@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://jqt74ikr55yr"]
+
+[ext_resource type="PackedScene" uid="uid://cadpw7sqrdts8" path="res://assets/entidades/player/player_sheet.glb" id="1_cbx2p"]
+
+[node name="MainMenu" type="Node3D" unique_id=1046108501]
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1595191863]
+
+[node name="Control" type="Control" parent="." unique_id=1731132308]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control" unique_id=997004474]
+layout_mode = 0
+offset_left = 68.0
+offset_top = 203.0
+offset_right = 319.0
+offset_bottom = 427.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/VBoxContainer" unique_id=710650231]
+layout_mode = 2
+
+[node name="singleplayerbutton" type="Button" parent="Control/VBoxContainer/VBoxContainer" unique_id=1601337840]
+layout_mode = 2
+text = "SINGLEPLAYER"
+
+[node name="customizebutton" type="Button" parent="Control/VBoxContainer/VBoxContainer" unique_id=1013133282]
+layout_mode = 2
+text = "CUSTOMIZE"
+
+[node name="settingsbutton" type="Button" parent="Control/VBoxContainer/VBoxContainer" unique_id=1144076196]
+layout_mode = 2
+text = "SETTINGS"
+
+[node name="exitbutton" type="Button" parent="Control/VBoxContainer" unique_id=1416641862]
+layout_mode = 2
+text = "EXIT"
+
+[node name="player_sheet" parent="." unique_id=893171310 instance=ExtResource("1_cbx2p")]
+transform = Transform3D(-0.026115114, 0, -0.99965894, 0, 1, 0, 0.99965894, 0, -0.026115114, 3.4766502, 0, -1.8071685)

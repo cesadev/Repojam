@@ -1,0 +1,221 @@
+extends CharacterBody3D
+
+# ============================================================
+# VARIÁVEIS DE STATUS E INVENTÁRIO
+# ============================================================
+@export var vida_maxima: int = 100
+var vida_atual: int = vida_maxima
+
+@export var energia_maxima: float = 40.0
+var energia_atual: float = energia_maxima
+
+@export var dinheiro_maximo: int = 9000
+var dinheiro_atual: int = 0
+
+var estado: String = "idle"
+var inventario: Array = []
+
+# ============================================================
+# CONFIGURAÇÕES DE MOVIMENTO
+# ============================================================
+@export var walk_speed = 4.0
+@export var run_speed = 8.0
+@export var crouch_speed = 2.0
+@export var fall_acceleration = 75.0
+
+@export var jump_force = 15.0
+@export var compact_dash_force = 30.0 
+@export var slide_boost = 14.0 
+
+# ============================================================
+# CONFIGURAÇÕES DE CÂMERA E EFEITOS
+# ============================================================
+@export var mouse_sensitivity = 0.003
+@export var default_camera_y = 0.55
+@export var crouch_camera_y = 0.2
+@export var compact_camera_y = 0.0
+
+@export var fov_normal = 75.0
+@export var fov_queda = 95.0 
+
+var target_velocity = Vector3.ZERO
+var current_speed = 0.0
+var compact_timer = 0.0
+
+var is_flipping = false 
+var shake_intensity = 0.0
+
+@onready var pivot = $Pivot
+@onready var camera = $Pivot/Camera3D
+
+var camera_rotation_x = 0.0
+
+func _ready():
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+func _input(event):
+	if event is InputEventMouseMotion:
+		rotate_y(-event.relative.x * mouse_sensitivity)
+		camera_rotation_x -= event.relative.y * mouse_sensitivity
+		camera_rotation_x = clamp(camera_rotation_x, -1.5, 1.5)
+		pivot.rotation.x = camera_rotation_x
+
+	if event is InputEventKey:
+		if event.keycode == KEY_ESCAPE and event.pressed:
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+func _physics_process(delta):
+	# ============================================================
+	# GESTÃO DA CÂMERA
+	# ============================================================
+	var target_camera_y = default_camera_y
+	var target_fov = fov_normal
+	
+	if estado in ["crouch", "crouch_slide"]:
+		target_camera_y = crouch_camera_y
+	elif estado == "compacto_ar":
+		target_camera_y = compact_camera_y
+		target_fov = fov_queda 
+	elif estado == "compacto_chao":
+		target_camera_y = compact_camera_y
+		
+	camera.position.y = lerp(camera.position.y, target_camera_y, 12.0 * delta)
+	camera.fov = lerp(camera.fov, target_fov, 8.0 * delta)
+
+	# Velocidade do giro ajustada para dar tempo de completar o 360 com calma
+	if is_flipping:
+		camera.rotation.x -= 6.0 * delta 
+	else:
+		camera.rotation.x = lerp_angle(camera.rotation.x, 0.0, 12.0 * delta)
+		
+	if shake_intensity > 0:
+		shake_intensity = lerp(shake_intensity, 0.0, 10.0 * delta)
+		camera.h_offset = randf_range(-shake_intensity, shake_intensity)
+		camera.v_offset = randf_range(-shake_intensity, shake_intensity)
+	else:
+		camera.h_offset = 0.0
+		camera.v_offset = 0.0
+
+	# ============================================================
+	# GESTÃO DE TIMERS E ENERGIA
+	# ============================================================
+	if compact_timer > 0:
+		compact_timer -= delta
+		if compact_timer <= 0 and is_on_floor():
+			estado = "idle"
+			
+	if estado != "run" and energia_atual < energia_maxima:
+		energia_atual += 2.0 * delta
+	energia_atual = clamp(energia_atual, 0.0, energia_maxima)
+
+	# ============================================================
+	# DIREÇÃO
+	# ============================================================
+	var forward = -camera.global_transform.basis.z
+	var right = camera.global_transform.basis.x
+	forward.y = 0
+	right.y = 0
+	forward = forward.normalized()
+	right = right.normalized()
+
+	# ============================================================
+	# MÁQUINA DE ESTADOS E MOVIMENTO
+	# ============================================================
+	if is_on_floor():
+		if estado == "compacto_ar":
+			estado = "compacto_chao"
+			compact_timer = 1.5 
+			is_flipping = false 
+			shake_intensity = 0.3 
+			
+		if compact_timer > 0:
+			current_speed = lerp(current_speed, 0.0, 8.0 * delta)
+			target_velocity.x = forward.x * current_speed
+			target_velocity.z = forward.z * current_speed
+			
+		else:
+			var direction = Vector3.ZERO
+			if Input.is_action_pressed("move_forward"): direction += forward
+			if Input.is_action_pressed("move_back"): direction -= forward
+			if Input.is_action_pressed("move_right"): direction += right
+			if Input.is_action_pressed("move_left"): direction -= right
+			
+			if direction != Vector3.ZERO:
+				direction = direction.normalized()
+				
+			var is_moving = direction != Vector3.ZERO
+			var is_running = Input.is_action_pressed("sprint") and is_moving and energia_atual > 0
+			var is_crouching = Input.is_action_pressed("crouch")
+			var just_crouched = Input.is_action_just_pressed("crouch")
+
+			if Input.is_action_just_pressed("compact"):
+				estado = "compacto_chao"
+				compact_timer = 1.5 
+				shake_intensity = 0.1 
+				
+			else:
+				var target_speed = 0.0
+				
+				if is_crouching:
+					if estado == "run" or estado == "crouch_slide":
+						if just_crouched and estado == "run":
+							current_speed = slide_boost
+							
+						estado = "crouch_slide"
+						target_speed = crouch_speed
+						if current_speed <= crouch_speed + 0.5:
+							estado = "crouch"
+					else:
+						estado = "crouch"
+						target_speed = crouch_speed
+						
+				elif is_running:
+					estado = "run"
+					target_speed = run_speed
+					energia_atual -= 5.0 * delta 
+					
+				elif is_moving:
+					estado = "walk"
+					target_speed = walk_speed
+					
+				else:
+					estado = "idle"
+
+				if estado == "crouch_slide":
+					current_speed = lerp(current_speed, target_speed, 2.0 * delta) 
+				else:
+					current_speed = lerp(current_speed, target_speed, 10.0 * delta) 
+
+				target_velocity.x = direction.x * current_speed
+				target_velocity.z = direction.z * current_speed
+
+				if Input.is_action_just_pressed("ui_accept"): 
+					estado = "jump"
+					target_velocity.y = jump_force
+
+	else:
+		# Gravidade suavizada no ar durante o compacto para estender o tempo de voo
+		if estado == "compacto_ar":
+			target_velocity.y -= (fall_acceleration * 0.6) * delta
+		else:
+			target_velocity.y -= fall_acceleration * delta
+		
+		if Input.is_action_just_pressed("compact") and estado != "compacto_ar":
+			estado = "compacto_ar"
+			
+			if current_speed > walk_speed + 0.5:
+				target_velocity.x = forward.x * compact_dash_force
+				target_velocity.z = forward.z * compact_dash_force
+				# Dá um pequeno impulso para cima (+6.0) ao dar o dash, esticando o tempo no ar
+				target_velocity.y = 6.0 
+				is_flipping = true
+			else:
+				target_velocity.y = -5.0
+				target_velocity.x = 0
+				target_velocity.z = 0
+				
+		elif estado != "compacto_ar":
+			estado = "jump"
+
+	velocity = target_velocity
+	move_and_slide()
