@@ -15,6 +15,9 @@ var dinheiro_atual: int = 0
 var estado: String = "idle"
 var inventario: Array = []
 
+# Variável de controle atualizada pelo script de interação de itens
+var segurando_item: bool = false
+
 # ============================================================
 # CONFIGURAÇÕES DE MOVIMENTO
 # ============================================================
@@ -47,6 +50,7 @@ var shake_intensity = 0.0
 
 @onready var pivot = $Pivot
 @onready var camera = $Pivot/Camera3D
+@onready var lanterna_light = $Pivot/Camera3D/lanterna/SpotLight3D
 
 var camera_rotation_x = 0.0
 
@@ -143,9 +147,9 @@ func _physics_process(delta):
 			var is_crouching = Input.is_action_pressed("crouch")
 			var just_crouched = Input.is_action_just_pressed("crouch")
 
-			# SÓ PERMITE O COMPACT NO CHÃO SE APERTAR O BOTÃO E TIVER PELO MENOS 25 DE ENERGIA
+			# Gasta 25 de energia e ativa o compacto no chão
 			if Input.is_action_just_pressed("compact") and energia_atual >= 25.0:
-				energia_atual -= 25.0 # Gasta 25 de energia na hora
+				energia_atual -= 25.0 
 				estado = "compacto_chao"
 				compact_timer = 1.5 
 				shake_intensity = 0.1 
@@ -169,7 +173,7 @@ func _physics_process(delta):
 				elif is_running:
 					estado = "run"
 					target_speed = run_speed
-					energia_atual -= 15.0 * delta # Gasta corrida por segundo
+					energia_atual -= 15.0 * delta # Gasta energia ao correr
 					
 				elif is_moving:
 					estado = "walk"
@@ -178,7 +182,7 @@ func _physics_process(delta):
 				else:
 					estado = "idle"
 
-				# SE NÃO ESTIVER CORRENDO, RECUPERA ENERGIA GRADUALMENTE
+				# Recupera energia se não estiver correndo
 				if estado != "run":
 					energia_atual += 8.0 * delta
 
@@ -197,7 +201,6 @@ func _physics_process(delta):
 					target_velocity.y = jump_force
 
 	else:
-		# Se estiver no ar, recupera um pouco de energia
 		energia_atual += 4.0 * delta
 		energia_atual = clamp(energia_atual, 0.0, energia_maxima)
 
@@ -206,9 +209,9 @@ func _physics_process(delta):
 		else:
 			target_velocity.y -= fall_acceleration * delta
 		
-		# SÓ PERMITE O COMPACT NO AR SE TIVER PELO MENOS 25 DE ENERGIA
+		# Gasta 25 de energia e ativa o compacto no ar
 		if Input.is_action_just_pressed("compact") and estado != "compacto_ar" and energia_atual >= 25.0:
-			energia_atual -= 25.0 # Gasta 25 de energia no ar
+			energia_atual -= 25.0 
 			estado = "compacto_ar"
 			
 			if current_speed > walk_speed + 0.5:
@@ -226,3 +229,15 @@ func _physics_process(delta):
 
 	velocity = target_velocity
 	move_and_slide()
+
+	# ============================================================
+	# GESTÃO DA LANTERNA
+	# ============================================================
+	if lanterna_light:
+		var esta_compacto = estado in ["compacto_ar", "compacto_chao"]
+		
+		# A lanterna acende apenas se NÃO estiver compacto E NÃO estiver segurando item
+		if not esta_compacto and not segurando_item:
+			lanterna_light.visible = true
+		else:
+			lanterna_light.visible = false

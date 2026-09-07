@@ -1,8 +1,11 @@
 [gd_scene format=3 uid="uid://58d47doq6aiy"]
 
-[ext_resource type="Script" uid="uid://qy0ydaqyklg5" path="res://assets/UI/player_ui.gd" id="1_p3ekm"]
+[ext_resource type="Script" uid="uid://qy0ydaqyklg5" path="res://scripts/UI/player_ui.gd" id="1_p3ekm"]
 [ext_resource type="Texture2D" uid="uid://nsc6r50w0aty" path="res://assets/UI/Stamina.png" id="1_py0tg"]
 [ext_resource type="Texture2D" uid="uid://cye5ixuhbiig5" path="res://assets/UI/Health.png" id="2_p3ekm"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_d0u6y"]
+size = Vector2(75, 75)
 
 [node name="PlayerUI" type="Control" unique_id=1725352464]
 layout_mode = 3
@@ -11,28 +14,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
+offset_left = -573.0
+offset_top = -327.0
+offset_right = 577.0
+offset_bottom = 323.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_p3ekm")
-
-[node name="Meta" type="Label" parent="." unique_id=147669889]
-layout_mode = 0
-offset_left = 428.0
-offset_top = -317.0
-offset_right = 567.0
-offset_bottom = -275.0
-theme_override_font_sizes/font_size = 30
-text = "$0 / 8,350"
-
-[node name="Fase" type="Label" parent="." unique_id=1608968797]
-layout_mode = 0
-offset_left = 465.0
-offset_top = -262.0
-offset_right = 535.0
-offset_bottom = -220.0
-theme_override_colors/font_color = Color(1, 0.38039216, 0, 1)
-theme_override_font_sizes/font_size = 30
-text = "0 / 1"
 
 [node name="Label" type="Label" parent="." unique_id=1362027743]
 layout_mode = 1
@@ -43,49 +31,101 @@ text = "+"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=681410211]
-layout_mode = 0
-offset_left = -565.0
-offset_top = -314.0
-offset_right = -330.0
-offset_bottom = -228.0
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=696605041]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -515.0
+offset_top = -269.0
+offset_right = 503.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 750
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1259972467]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer" unique_id=681410211]
 layout_mode = 2
 
-[node name="Stamina2" type="TextureRect" parent="VBoxContainer/HBoxContainer" unique_id=1144927665]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer" unique_id=1259972467]
+layout_mode = 2
+
+[node name="Stamina2" type="TextureRect" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1144927665]
 layout_mode = 2
 texture = ExtResource("1_py0tg")
 expand_mode = 3
 
-[node name="Stamina" type="Label" parent="VBoxContainer/HBoxContainer" unique_id=2103014214]
+[node name="Stamina" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=2103014214]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 0, 1)
 theme_override_font_sizes/font_size = 25
 text = "40"
 
-[node name="StaminaLimite" type="Label" parent="VBoxContainer/HBoxContainer" unique_id=783470422]
+[node name="StaminaLimite" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer" unique_id=783470422]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 0, 1)
 theme_override_font_sizes/font_size = 20
 text = "/40"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer" unique_id=2041850708]
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/VBoxContainer" unique_id=2041850708]
 layout_mode = 2
 
-[node name="Health2" type="TextureRect" parent="VBoxContainer/HBoxContainer2" unique_id=1291583920]
+[node name="Health2" type="TextureRect" parent="HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1291583920]
 layout_mode = 2
 texture = ExtResource("2_p3ekm")
 expand_mode = 2
 
-[node name="Health" type="Label" parent="VBoxContainer/HBoxContainer2" unique_id=922626505]
+[node name="Health" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=922626505]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 1, 0, 1)
 theme_override_font_sizes/font_size = 25
 text = "100"
 
-[node name="HealthLimite" type="Label" parent="VBoxContainer/HBoxContainer2" unique_id=993518043]
+[node name="HealthLimite" type="Label" parent="HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=993518043]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 1, 0, 1)
 theme_override_font_sizes/font_size = 20
 text = "/100"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer" unique_id=1542507111]
+layout_mode = 2
+
+[node name="Meta" type="Label" parent="HBoxContainer/VBoxContainer2" unique_id=147669889]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "$0 / 8,350"
+
+[node name="Fase" type="Label" parent="HBoxContainer/VBoxContainer2" unique_id=1608968797]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.38039216, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "0 / 1"
+
+[node name="Itens Container" type="HBoxContainer" parent="." unique_id=1361959506]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -95.0
+offset_right = 101.0
+offset_bottom = -45.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 20
+
+[node name="TextureRect" type="TextureRect" parent="Itens Container" unique_id=1303670860]
+layout_mode = 2
+texture = SubResource("PlaceholderTexture2D_d0u6y")
+
+[node name="TextureRect2" type="TextureRect" parent="Itens Container" unique_id=602844145]
+layout_mode = 2
+texture = SubResource("PlaceholderTexture2D_d0u6y")
+
+[node name="TextureRect3" type="TextureRect" parent="Itens Container" unique_id=92907441]
+layout_mode = 2
+texture = SubResource("PlaceholderTexture2D_d0u6y")

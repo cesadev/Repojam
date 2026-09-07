@@ -2,15 +2,15 @@ extends Control
 
 @onready var player = null
 
-# Referências dos Labels de Stamina e Vida
-@onready var stamina_label = $VBoxContainer/HBoxContainer/Stamina
-@onready var stamina_limite_label = $VBoxContainer/HBoxContainer/StaminaLimite
-@onready var health_label = $VBoxContainer/HBoxContainer2/Health
-@onready var health_limite_label = $VBoxContainer/HBoxContainer2/HealthLimite
+# Referências corrigidas baseadas na nova estrutura de nós do PlayerUI.tscn
+@onready var stamina_label = $HBoxContainer/VBoxContainer/HBoxContainer/Stamina
+@onready var stamina_limite_label = $HBoxContainer/VBoxContainer/HBoxContainer/StaminaLimite
+@onready var health_label = $HBoxContainer/VBoxContainer/HBoxContainer2/Health
+@onready var health_limite_label = $HBoxContainer/VBoxContainer/HBoxContainer2/HealthLimite
 
-# Referências de Texto da UI (Meta e Fase)
-@onready var meta_label = $Meta
-@onready var fase_label = $Fase
+# Referências de Texto da UI (Meta e Fase) corrigidas para a nova estrutura
+@onready var meta_label = $HBoxContainer/VBoxContainer2/Meta
+@onready var fase_label = $HBoxContainer/VBoxContainer2/Fase
 
 # Contêiner placeholder para os itens
 @onready var itens_container: HBoxContainer = null
@@ -24,7 +24,6 @@ func _ready() -> void:
 	else:
 		player = get_node_or_null("../Player")
 
-	_criar_placeholders_itens()
 
 func _process(delta: float) -> void:
 	if not player:
@@ -39,9 +38,6 @@ func _process(delta: float) -> void:
 	# Atualiza a stamina e o limite
 	stamina_label.text = str(int(player.energia_atual))
 	stamina_limite_label.text = "/" + str(int(player.energia_maxima))
-
-	# Nota: O dinheiro/grana atual do jogador também pode ser puxado direto do player se quiser,
-	# mas mantemos a compatibilidade caso a meta_area atualize via função abaixo.
 
 # ============================================================
 # FUNÇÕES CHAMADAS PELA META_AREA.GD
@@ -70,24 +66,3 @@ func _formatar_milhar(valor: int) -> String:
 			result += ","
 		result += s[i]
 	return result
-
-func _criar_placeholders_itens() -> void:
-	itens_container = HBoxContainer.new()
-	itens_container.name = "ItensContainer"
-	itens_container.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	itens_container.offset_left = -200
-	itens_container.offset_top = -150
-	itens_container.offset_right = 200
-	itens_container.offset_bottom = -100
-	add_child(itens_container)
-
-	for i in range(4):
-		var placeholder = TextureRect.new()
-		placeholder.custom_minimum_size = Vector2(40, 40)
-		placeholder.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
-		
-		var img = Image.create(40, 40, false, Image.FORMAT_RGBA8)
-		img.fill(Color(0.2, 0.2, 0.2, 0.6))
-		placeholder.texture = ImageTexture.create_from_image(img)
-		
-		itens_container.add_child(placeholder)
