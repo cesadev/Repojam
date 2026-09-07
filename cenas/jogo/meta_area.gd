@@ -156,8 +156,8 @@ func recalcular_valor():
 
 				player_ui.atualizar_fase(1, total_fases)
 
-			# Remove os itens.
-			remover_itens()
+			# Espera 5 segundos antes de remover os itens.
+			aguardar_e_remover_itens()
 
 	else:
 
@@ -173,6 +173,19 @@ func recalcular_valor():
 	# ========================================================
 
 	print("Valor atual da meta: ", valor_atual, " / ", valor_meta)
+
+
+# ============================================================
+# ESPERAR 5 SEGUNDOS E REMOVER
+# ============================================================
+
+func aguardar_e_remover_itens():
+
+	print("Itens serão removidos em 5 segundos...")
+
+	await get_tree().create_timer(5.0).timeout
+
+	remover_itens()
 
 
 # ============================================================
