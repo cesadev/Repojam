@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://dg0k6kmacs3ps"]
+
+[node name="Bateria" type="RigidBody3D" unique_id=1348731253]

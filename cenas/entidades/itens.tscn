@@ -1,26 +1,50 @@
 [gd_scene format=3 uid="uid://c6oc21it4qrh2"]
 
-[ext_resource type="Script" uid="uid://cy12avh4am7km" path="res://cenas/entidades/item_1.gd" id="1_2vwcp"]
-[ext_resource type="Resource" uid="uid://c4myrc0r1681" path="res://scripts/item/radio.tres" id="2_35ama"]
+[ext_resource type="Script" uid="uid://cy12avh4am7km" path="res://scripts/item/Itens.gd" id="1_2vwcp"]
+[ext_resource type="Resource" uid="uid://c4myrc0r1681" path="res://cenas/itens/radio.tres" id="2_35ama"]
+[ext_resource type="Resource" uid="uid://c6tim217bjltx" path="res://cenas/itens/bateria.tres" id="3_ynot1"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bhunq"]
 albedo_color = Color(0, 0.35686275, 1, 1)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g4v7s"]
+albedo_color = Color(0.736863, 0.505702, 0, 1)
+
 [sub_resource type="BoxMesh" id="BoxMesh_bhunq"]
+material = SubResource("StandardMaterial3D_g4v7s")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_bhunq"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yf5fn"]
+albedo_color = Color(0.70410687, 0.5896026, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_57qmd"]
+
 [node name="itens" type="Node3D" unique_id=1864260783]
 
-[node name="Item1" type="RigidBody3D" parent="." unique_id=1775263329 groups=["itens_pegar"]]
+[node name="Radio" type="RigidBody3D" parent="." unique_id=1775263329 groups=["itens_pegar"]]
 linear_damp = 0.5
 angular_damp = 1.0
 script = ExtResource("1_2vwcp")
 dados = ExtResource("2_35ama")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Item1" unique_id=1448522344]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Radio" unique_id=1448522344]
 material_override = SubResource("StandardMaterial3D_bhunq")
 mesh = SubResource("BoxMesh_bhunq")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Item1" unique_id=1404731369]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Radio" unique_id=1404731369]
+shape = SubResource("BoxShape3D_bhunq")
+
+[node name="Bateria" type="RigidBody3D" parent="." unique_id=1000436835 groups=["itens_pegar"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4748955, 0, 0)
+linear_damp = 0.5
+angular_damp = 1.0
+script = ExtResource("1_2vwcp")
+dados = ExtResource("3_ynot1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Bateria" unique_id=1458533561]
+material_override = SubResource("StandardMaterial3D_yf5fn")
+mesh = SubResource("BoxMesh_57qmd")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Bateria" unique_id=761355858]
 shape = SubResource("BoxShape3D_bhunq")

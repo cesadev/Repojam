@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://c6tim217bjltx"]
+
+[ext_resource type="Script" uid="uid://i8rxtffcr4xo" path="res://scripts/item/ItemData.gd" id="1_vdmin"]
+
+[resource]
+script = ExtResource("1_vdmin")
+nome = "Bateria"
+valor = 25
+metadata/_custom_type_script = "uid://i8rxtffcr4xo"
