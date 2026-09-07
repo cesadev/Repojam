@@ -5,13 +5,17 @@ albedo_color = Color(0, 0.35686275, 1, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_bhunq"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_en7y3"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_bhunq"]
 
-[node name="Item1" type="StaticBody3D" unique_id=1161841566]
+[node name="itens" type="Node3D" unique_id=1864260783]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=510911992]
+[node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=1775263329 groups=["itens_pegar"]]
+linear_damp = 0.5
+angular_damp = 1.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D" unique_id=1448522344]
 material_override = SubResource("StandardMaterial3D_bhunq")
 mesh = SubResource("BoxMesh_bhunq")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=396741455]
-shape = SubResource("BoxShape3D_en7y3")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=1404731369]
+shape = SubResource("BoxShape3D_bhunq")

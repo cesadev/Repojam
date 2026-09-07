@@ -53,27 +53,38 @@ script/source = "extends Node3D
 # REFERÊNCIAS
 # ============================================================
 
-# Referência para o Player.
+# Referência ao Player.
 @onready var player = get_parent()
 
-# Referência para a câmera do Player.
+# Referência à câmera do Player.
 @onready var camera = player.get_node(\"Pivot/Camera3D\")
 
 
 # ============================================================
-# CONFIGURAÇÕES DA INTERAÇÃO
+# CONFIGURAÇÕES
 # ============================================================
 
-# Distância máxima para detectar um objeto.
+# Distância máxima para pegar um objeto.
 @export var distancia_interacao := 5.0
+# Distância que o objeto ficará à frente da câmera.
+@export var distancia_arraste := 2.0
+# Distância mínima que o objeto pode ficar da câmera.
+@export var distancia_minima_arraste := 1.0
 
+# Distância máxima que o objeto pode ficar da câmera.
+@export var distancia_maxima_arraste := 4.0
 
+# Velocidade com que o objeto acompanha a câmera.
+@export var velocidade_arraste := 10.0
+
+# Quanto o scroll move o objeto.
+@export var velocidade_scroll := 0.1
 # ============================================================
 # ESTADO DA INTERAÇÃO
 # ============================================================
 
-# Guarda o item que estamos segurando.
-# null = não estamos segurando nada.
+# Guarda o objeto que está sendo segurado.
+# null = nenhum objeto sendo segurado.
 var item_sendo_arrastado = null
 
 
@@ -83,9 +94,9 @@ var item_sendo_arrastado = null
 
 func _ready():
 
-	# Verifica se conseguimos encontrar a câmera.
 	if camera:
 		print(\"Interaction: câmera encontrada!\")
+
 	else:
 		print(\"Interaction: ERRO! Câmera não encontrada.\")
 
@@ -96,20 +107,32 @@ func _ready():
 
 func _input(event):
 
-	# Detecta eventos do botão do mouse.
+	# Verifica se aconteceu algum evento com botão do mouse.
 	if event is InputEventMouseButton:
 
-		# Estamos interessados no botão esquerdo.
+		# Queremos somente o botão esquerdo.
 		if event.button_index == MOUSE_BUTTON_LEFT:
 
-			# Botão pressionado.
+			# Botão esquerdo pressionado.
 			if event.pressed:
 				tentar_pegar_item()
 
-			# Botão solto.
+			# Botão esquerdo solto.
 			else:
 				soltar_item()
+	# ========================================================
+	# SCROLL DO MOUSE
+	# ========================================================
 
+	if event is InputEventMouseButton:
+
+		# Scroll para cima.
+		if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			mover_item_com_scroll(-1)
+
+		# Scroll para baixo.
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			mover_item_com_scroll(1)
 
 # ============================================================
 # PEGAR ITEM
@@ -117,30 +140,27 @@ func _input(event):
 
 func tentar_pegar_item():
 
-	# ========================================================
+	# --------------------------------------------------------
 	# POSIÇÃO DO MOUSE
-	# ========================================================
+	# --------------------------------------------------------
 
 	var mouse_pos = get_viewport().get_mouse_position()
 
 
-	# ========================================================
-	# CRIAR O RAIO A PARTIR DA CÂMERA
-	# ========================================================
+	# --------------------------------------------------------
+	# CRIAR RAIO A PARTIR DA CÂMERA
+	# --------------------------------------------------------
 
-	# Ponto inicial do raio.
 	var origem = camera.project_ray_origin(mouse_pos)
 
-	# Direção para onde o raio está apontando.
 	var direcao = camera.project_ray_normal(mouse_pos)
 
-	# Ponto final do raio.
 	var destino = origem + direcao * distancia_interacao
 
 
-	# ========================================================
+	# --------------------------------------------------------
 	# CONFIGURAR O RAYCAST
-	# ========================================================
+	# --------------------------------------------------------
 
 	var query = PhysicsRayQueryParameters3D.create(
 		origem,
@@ -148,35 +168,131 @@ func tentar_pegar_item():
 	)
 
 
-	# ========================================================
+	# --------------------------------------------------------
 	# FAZER O RAYCAST
-	# ========================================================
+	# --------------------------------------------------------
 
 	var resultado = get_world_3d().direct_space_state.intersect_ray(query)
 
 
-	# ========================================================
+	# --------------------------------------------------------
 	# VERIFICAR O RESULTADO
-	# ========================================================
+	# --------------------------------------------------------
 
 	if resultado:
 
 		var objeto = resultado.collider
 
-		print(\"Objeto encontrado: \", objeto.name)
+
+		# ----------------------------------------------------
+		# VERIFICAR SE É UM ITEM PEGÁVEL
+		# ----------------------------------------------------
+
+		if objeto.is_in_group(\"itens_pegar\"):
+
+			print(\"Item pegável encontrado: \", objeto.name)
+
+			# Guardamos o item.
+			item_sendo_arrastado = objeto
+
+		else:
+
+			print(\"Objeto encontrado, mas não pode ser pego.\")
 
 	else:
 
 		print(\"Nenhum objeto encontrado.\")
 
 
+# ============================================================
+# ARRASTAR ITEM
+# ============================================================
+
+func arrastar_item():
+
+	# ========================================================
+	# VERIFICAR SE EXISTE UM ITEM
+	# ========================================================
+
+	if item_sendo_arrastado == null:
+		return
+
+
+	# ========================================================
+	# CALCULAR A POSIÇÃO ALVO
+	# ========================================================
+
+	var posicao_alvo = camera.global_position
+
+	var direcao = -camera.global_transform.basis.z
+
+	posicao_alvo += direcao * distancia_arraste
+
+
+	# ========================================================
+	# MOVIMENTO SUAVE
+	# ========================================================
+
+	var distancia = item_sendo_arrastado.global_position.distance_to(posicao_alvo)
+
+	# Move o item em direção ao alvo.
+	var velocidade = velocidade_arraste * distancia
+
+	item_sendo_arrastado.global_position = item_sendo_arrastado.global_position.lerp(
+		posicao_alvo,
+		min(velocidade * get_process_delta_time(), 1.0)
+	)
+
+# ============================================================
+# SOLTAR ITEM
+# ============================================================
+# ============================================================
+# DISTÂNCIA DO ITEM
+# ============================================================
+
+func mover_item_com_scroll(direcao):
+
+	# Só podemos alterar a distância
+	# se estivermos segurando um item.
+	if item_sendo_arrastado == null:
+		return
+
+
+	# ========================================================
+	# ALTERAR DISTÂNCIA
+	# ========================================================
+
+	distancia_arraste += direcao * velocidade_scroll
+
+
+	# ========================================================
+	# LIMITAR DISTÂNCIA
+	# ========================================================
+
+	distancia_arraste = clamp(
+		distancia_arraste,
+		distancia_minima_arraste,
+		distancia_maxima_arraste
+	)
+
 func soltar_item():
 
 	if item_sendo_arrastado != null:
 
-		print(\"Item solto!\")
+		print(\"Item solto: \", item_sendo_arrastado.name)
 
 		item_sendo_arrastado = null
+# ============================================================
+# PROCESSAMENTO DA INTERAÇÃO
+# ============================================================
+
+func _process(_delta):
+
+	# Se estamos segurando um item,
+	# atualizamos sua posição.
+	if item_sendo_arrastado != null:
+
+		arrastar_item()
 "
 
 [node name="CharacterBody3D" type="CharacterBody3D" unique_id=88959712]
