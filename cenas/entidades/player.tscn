@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://dnde6kbl7keax"]
 
-[ext_resource type="Script" uid="uid://cswe6q22acxrr" path="res://cenas/entidades/player.gd" id="1_svr0m"]
+[ext_resource type="Script" uid="uid://cswe6q22acxrr" path="res://scripts/entidades/player.gd" id="1_svr0m"]
 [ext_resource type="PackedScene" uid="uid://58d47doq6aiy" path="res://assets/UI/PlayerUI.tscn" id="2_tml3h"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2nkgy"]
@@ -308,6 +308,7 @@ current = true
 
 [node name="Sphere_003" type="MeshInstance3D" parent="Pivot" unique_id=1856768637]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0037617087)
+visible = false
 mesh = SubResource("ArrayMesh_u4q17")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1792594318]
