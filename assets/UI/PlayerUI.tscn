@@ -1,105 +1,91 @@
 [gd_scene format=3 uid="uid://58d47doq6aiy"]
 
+[ext_resource type="Script" uid="uid://qy0ydaqyklg5" path="res://assets/UI/player_ui.gd" id="1_p3ekm"]
 [ext_resource type="Texture2D" uid="uid://nsc6r50w0aty" path="res://assets/UI/Stamina.png" id="1_py0tg"]
 [ext_resource type="Texture2D" uid="uid://cye5ixuhbiig5" path="res://assets/UI/Health.png" id="2_p3ekm"]
 
-[node name="PlayerUi" type="Control" unique_id=1725352464]
+[node name="PlayerUI" type="Control" unique_id=1725352464]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_p3ekm")
 
-[node name="Stamina" type="Label" parent="." unique_id=2103014214]
+[node name="Meta" type="Label" parent="." unique_id=147669889]
 layout_mode = 0
-offset_left = 55.0
-offset_top = 67.0
-offset_right = 95.0
-offset_bottom = 102.00005
+offset_left = 428.0
+offset_top = -317.0
+offset_right = 567.0
+offset_bottom = -275.0
+theme_override_font_sizes/font_size = 30
+text = "$0 / 8,350"
+
+[node name="Fase" type="Label" parent="." unique_id=1608968797]
+layout_mode = 0
+offset_left = 465.0
+offset_top = -262.0
+offset_right = 535.0
+offset_bottom = -220.0
+theme_override_colors/font_color = Color(1, 0.38039216, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "0 / 1"
+
+[node name="Label" type="Label" parent="." unique_id=1362027743]
+layout_mode = 1
+anchors_preset = -1
+offset_right = 10.0
+offset_bottom = 23.0
+text = "+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=681410211]
+layout_mode = 0
+offset_left = -565.0
+offset_top = -314.0
+offset_right = -330.0
+offset_bottom = -228.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1259972467]
+layout_mode = 2
+
+[node name="Stamina2" type="TextureRect" parent="VBoxContainer/HBoxContainer" unique_id=1144927665]
+layout_mode = 2
+texture = ExtResource("1_py0tg")
+expand_mode = 3
+
+[node name="Stamina" type="Label" parent="VBoxContainer/HBoxContainer" unique_id=2103014214]
+layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 0, 1)
 theme_override_font_sizes/font_size = 25
 text = "40"
 
-[node name="Health" type="Label" parent="." unique_id=922626505]
-layout_mode = 0
-offset_left = 55.0
-offset_top = 18.0
-offset_right = 100.0
-offset_bottom = 53.0
-theme_override_colors/font_color = Color(0, 1, 0, 1)
-theme_override_font_sizes/font_size = 25
-text = "100"
-
-[node name="HealthLimite" type="Label" parent="." unique_id=993518043]
-layout_mode = 0
-offset_left = 105.0
-offset_top = 14.0
-offset_right = 150.0
-offset_bottom = 44.0
-theme_override_colors/font_color = Color(0, 1, 0, 1)
-theme_override_font_sizes/font_size = 20
-text = "/100"
-
-[node name="StaminaLimite" type="Label" parent="." unique_id=783470422]
-layout_mode = 0
-offset_left = 105.0
-offset_top = 60.0
-offset_right = 145.0
-offset_bottom = 88.00003
+[node name="StaminaLimite" type="Label" parent="VBoxContainer/HBoxContainer" unique_id=783470422]
+layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 0, 1)
 theme_override_font_sizes/font_size = 20
 text = "/40"
 
-[node name="Stamina2" type="Sprite2D" parent="." unique_id=1844342481]
-position = Vector2(33, 88)
-scale = Vector2(0.05, 0.05)
-texture = ExtResource("1_py0tg")
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer" unique_id=2041850708]
+layout_mode = 2
 
-[node name="Health2" type="Sprite2D" parent="." unique_id=1780624225]
-position = Vector2(29.687496, 37.6875)
-scale = Vector2(0.05, 0.05)
+[node name="Health2" type="TextureRect" parent="VBoxContainer/HBoxContainer2" unique_id=1291583920]
+layout_mode = 2
 texture = ExtResource("2_p3ekm")
+expand_mode = 2
 
-[node name="Item1" type="Button" parent="." unique_id=177874081]
-layout_mode = 0
-offset_left = 550.0
-offset_top = 592.865
-offset_right = 616.8572
-offset_bottom = 646.865
-text = "2"
+[node name="Health" type="Label" parent="VBoxContainer/HBoxContainer2" unique_id=922626505]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_font_sizes/font_size = 25
+text = "100"
 
-[node name="Item3" type="Button" parent="." unique_id=915610611]
-layout_mode = 0
-offset_left = 633.035
-offset_top = 592.865
-offset_right = 699.89215
-offset_bottom = 646.865
-text = "3"
-
-[node name="Item2" type="Button" parent="." unique_id=1063416515]
-layout_mode = 0
-offset_left = 466.685
-offset_top = 592.865
-offset_right = 533.54236
-offset_bottom = 646.865
-text = "1"
-
-[node name="Meta" type="Label" parent="." unique_id=147669889]
-layout_mode = 0
-offset_left = 1004.0
-offset_top = 5.0
-offset_right = 1143.0
-offset_bottom = 47.0
-theme_override_font_sizes/font_size = 30
-text = "$0 / 8,350"
-
-[node name="Phase" type="Label" parent="." unique_id=1608968797]
-layout_mode = 0
-offset_left = 1066.0
-offset_top = 43.0
-offset_right = 1136.0
-offset_bottom = 85.0
-theme_override_colors/font_color = Color(1, 0.38039216, 0, 1)
-theme_override_font_sizes/font_size = 30
-text = "0 / 1"
+[node name="HealthLimite" type="Label" parent="VBoxContainer/HBoxContainer2" unique_id=993518043]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_font_sizes/font_size = 20
+text = "/100"

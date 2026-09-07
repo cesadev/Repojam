@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dnde6kbl7keax" path="res://cenas/entidades/player.tscn" id="1_uuxp2"]
 [ext_resource type="PackedScene" uid="uid://c6oc21it4qrh2" path="res://cenas/entidades/itens.tscn" id="2_kf301"]
+[ext_resource type="Script" uid="uid://b61folqnsf22i" path="res://cenas/jogo/meta_area.gd" id="3_jujps"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_sn0t7"]
 
@@ -51,6 +52,9 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_5185e")
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_riqys"]
+size = Vector3(4, 1, 4)
+
 [node name="PlayMap" type="Node3D" unique_id=662384771]
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1107814898]
@@ -66,7 +70,7 @@ mesh = SubResource("BoxMesh_sn0t7")
 transform = Transform3D(1.532795, 0, 0, 0, 0.086778566, 0, 0, 0, 1.532795, 6.0035224, 0.23530376, 5.6825366)
 mesh = SubResource("ArrayMesh_goxqw")
 
-[node name="CharacterBody3D" parent="." unique_id=88959712 instance=ExtResource("1_uuxp2")]
+[node name="Player" parent="." unique_id=88959712 instance=ExtResource("1_uuxp2")]
 transform = Transform3D(-0.99985445, 0, -0.017061511, 0, 1, 0, 0.017061511, 0, -0.99985445, 5.7726383, 0.9322223, -2.5359187)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1971279102]
@@ -74,3 +78,13 @@ transform = Transform3D(1, 0, 0, 0, -0.026563901, 0.99964714, 0, -0.99964714, -0
 
 [node name="Item1" parent="." unique_id=1161841566 instance=ExtResource("2_kf301")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5050125, 0.5999999, 0.6657567)
+
+[node name="MetaArea" type="Area3D" parent="." unique_id=1421573053]
+script = ExtResource("3_jujps")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MetaArea" unique_id=622430190]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.9692955, 0.6128242, 5.6198316)
+shape = SubResource("BoxShape3D_riqys")
+
+[connection signal="body_entered" from="MetaArea" to="MetaArea" method="_on_body_entered"]
+[connection signal="body_exited" from="MetaArea" to="MetaArea" method="_on_body_exited"]
