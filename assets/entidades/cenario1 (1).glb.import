@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bgk82testg1h7"
-path="res://.godot/imported/cenario1.glb-9c920fc1bdeb52ee597a59fb1d5560d5.scn"
+uid="uid://bg4kg4hlukrrw"
+path="res://.godot/imported/cenario1 (1).glb-033bcd3c333939e54957de1030275385.scn"
 
 [deps]
 
-source_file="res://assets/mapas/cenario1.glb"
-dest_files=["res://.godot/imported/cenario1.glb-9c920fc1bdeb52ee597a59fb1d5560d5.scn"]
+source_file="res://assets/entidades/cenario1 (1).glb"
+dest_files=["res://.godot/imported/cenario1 (1).glb-033bcd3c333939e54957de1030275385.scn"]
 
 [params]
 

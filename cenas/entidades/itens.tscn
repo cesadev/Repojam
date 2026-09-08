@@ -2,18 +2,12 @@
 
 [ext_resource type="Script" uid="uid://cy12avh4am7km" path="res://scripts/item/Itens.gd" id="1_2vwcp"]
 [ext_resource type="Resource" uid="uid://c4myrc0r1681" path="res://cenas/itens/radio.tres" id="2_35ama"]
+[ext_resource type="AudioStream" uid="uid://bw4tivjixwdwm" path="res://assets/sounds/Projeto_novo _1_.mp3" id="3_6q4qq"]
+[ext_resource type="PackedScene" uid="uid://x274yl0e4wjx" path="res://assets/props/Radio.glb" id="3_7qvwg"]
 [ext_resource type="Resource" uid="uid://c6tim217bjltx" path="res://cenas/itens/bateria.tres" id="3_ynot1"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bhunq"]
-albedo_color = Color(0, 0.35686275, 1, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g4v7s"]
-albedo_color = Color(0.736863, 0.505702, 0, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_bhunq"]
-material = SubResource("StandardMaterial3D_g4v7s")
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_bhunq"]
+size = Vector3(0.86743164, 0.5716553, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yf5fn"]
 albedo_color = Color(0.70410687, 0.5896026, 0, 1)
@@ -28,12 +22,17 @@ angular_damp = 1.0
 script = ExtResource("1_2vwcp")
 dados = ExtResource("2_35ama")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Radio" unique_id=1448522344]
-material_override = SubResource("StandardMaterial3D_bhunq")
-mesh = SubResource("BoxMesh_bhunq")
+[node name="Radio" parent="Radio" unique_id=598294812 instance=ExtResource("3_7qvwg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15965569, -1.248833, 0.14360547)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Radio" unique_id=1404731369]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.03967285, 0.06854248, 0)
 shape = SubResource("BoxShape3D_bhunq")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="Radio" unique_id=337013521]
+stream = ExtResource("3_6q4qq")
+volume_db = -5.0
+autoplay = true
 
 [node name="Bateria" type="RigidBody3D" parent="." unique_id=1000436835 groups=["itens_pegar"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4748955, 0, 0)

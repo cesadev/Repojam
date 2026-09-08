@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://bhkrmjyihyvxf"]
+
+[ext_resource type="Script" uid="uid://b6so4ggfynba5" path="res://monstro.gd" id="1_d3dxs"]
+[ext_resource type="Texture2D" uid="uid://d1ku7g2ikqjyi" path="res://assets/entidades/images.png" id="2_d5elq"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wckcm"]
+albedo_texture = ExtResource("2_d5elq")
+
+[sub_resource type="BoxMesh" id="BoxMesh_6f8o3"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sn0t7"]
+
+[node name="Monstro" type="CharacterBody3D" unique_id=1846765709 groups=["jogador"]]
+script = ExtResource("1_d3dxs")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=385072337]
+material_override = SubResource("StandardMaterial3D_wckcm")
+mesh = SubResource("BoxMesh_6f8o3")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=958611174]
+shape = SubResource("BoxShape3D_sn0t7")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=723684778]

@@ -25,8 +25,8 @@ script = ExtResource("1_p3ekm")
 [node name="Label" type="Label" parent="." unique_id=1362027743]
 layout_mode = 1
 anchors_preset = -1
-offset_right = 10.0
-offset_bottom = 23.0
+offset_right = 1149.0
+offset_bottom = 648.0
 text = "+"
 horizontal_alignment = 1
 vertical_alignment = 1
